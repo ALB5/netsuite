@@ -102,7 +102,8 @@ class NetSuite:
         wsdl_url: str = None,
         cache: zeep.cache.Base = None,
         session: requests.Session = None,
-        sandbox: bool = None
+        sandbox: bool = None,
+        cache_path: str = None
     ) -> None:
 
         if sandbox is not None:
@@ -122,6 +123,7 @@ class NetSuite:
         self.__cache = cache
         self.__session = session
         self.__restlet = NetsuiteRestlet(self.__config)
+        self.__cache_path = cache_path
 
     @property
     def restlet(self):
@@ -183,7 +185,7 @@ class NetSuite:
         )
 
     def _generate_cache(self) -> zeep.cache.Base:
-        return SqliteCache(timeout=60 * 60 * 24 * 365)
+        return SqliteCache(timeout=60 * 60 * 24 * 365, path=self.__cache_path)
 
     def _generate_session(self) -> requests.Session:
         return requests.Session()
